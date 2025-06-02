@@ -35,6 +35,7 @@ export function CBTSystem({ examData, onExamComplete }: CBTSystemProps) {
   const [questions, setQuestions] = useState<Question[]>([])
 
   const { availability } = useExamSchedule(examData.config.schedule)
+  console.log("cbt system");
 
   useEffect(() => {
     let processedQuestions = [...examData.questions]
@@ -52,6 +53,12 @@ export function CBTSystem({ examData, onExamComplete }: CBTSystemProps) {
 
     setQuestions(processedQuestions.slice(0, examData.config.totalQuestions))
   }, [examData])
+
+  useEffect(() => {
+    console.log("we are in use effect");
+    console.log(availability);
+    //console.log(examAttempt);
+  }, [availability ,questions, currentQuestionIndex, answers, examStarted, showCalculator, warnings, examAttempt, studentInfo])
 
   const handleViolation = useCallback(
     (violation: string) => {
@@ -127,9 +134,9 @@ export function CBTSystem({ examData, onExamComplete }: CBTSystemProps) {
     timer.start()
 
     // Request fullscreen after user gesture
-    if (examData.config.enableFullScreenMode) {
+    /*if (examData.config.enableFullScreenMode) {
       security.requestFullScreen()
-    }
+    }*/
   }
 
   const completeExam = () => {
@@ -179,6 +186,7 @@ export function CBTSystem({ examData, onExamComplete }: CBTSystemProps) {
 
     timer.pause()
     onExamComplete(completedAttempt, studentAnswerData)
+    console.log(completedAttempt);
   }
 
   const calculateScore = () => {

@@ -82,7 +82,7 @@ export function useExamSchedule(schedule?: ExamSchedule) {
 
   useEffect(() => {
     checkAvailability()
-    const interval = setInterval(checkAvailability, 1000) // Update every second
+    const interval = setInterval(checkAvailability, 30000) // Update every second
 
     return () => clearInterval(interval)
   }, [checkAvailability])

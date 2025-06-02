@@ -20,7 +20,9 @@ export default function HomePage() {
   const [currentView, setCurrentView] = useState<
     "home" | "admin" | "exam" | "results" | "result-checker" | "dashboard"
   >("home")
-  const [studentId] = useState("student-" + Math.random().toString(36).substr(2, 9))
+  //const [studentId] = useState("student-" + Math.random().toString(36).substr(2, 9))
+  const studentId = "236damilare";
+  console.log("page tsx cbt system");
 
   const handleExamUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -30,6 +32,7 @@ export default function HomePage() {
     reader.onload = (e) => {
       try {
         const data: ExamData = JSON.parse(e.target?.result as string)
+        console.log(data);
         setExamData(data)
         setCurrentView("exam")
       } catch (error) {
@@ -244,7 +247,7 @@ export default function HomePage() {
             <CardContent>
               <p className="text-muted-foreground mb-4">Current session information and exam history.</p>
               <div className="space-y-2 text-sm">
-                <div>Student ID: {studentId}</div>
+                <div>Student ID: {/*studentId*/ "236damilare"}</div>
                 <div>Attempts: {examAttempts.length}</div>
                 <div>Status: Ready</div>
               </div>
