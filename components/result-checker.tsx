@@ -134,7 +134,7 @@ export function ResultChecker() {
 
   if (report) {
     return (
-      <div className="min-h-screen bg-gray-50 p-4">
+      <div className="min-h-full bg-gray-50 p-4">
         <div className="max-w-6xl mx-auto">
           <div className="mb-6">
             <Button
@@ -155,7 +155,7 @@ export function ResultChecker() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className="min-h-full bg-gray-50 p-4">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold mb-4">Result Checker</h1>

@@ -1,0 +1,105 @@
+{
+  "config": {
+    "title": "Mathematics Basics",
+    "description": "Test your knowledge of basic mathematics including algebra, geometry, and arithmetic",
+    "timeLimit": 45,
+    "totalQuestions": 10,
+    "passingScore": 75,
+    "allowCalculator": true,
+    "allowBackNavigation": true,
+    "randomizeQuestions": false,
+    "randomizeOptions": true,
+    "showResultsImmediately": true,
+    "maxAttempts": 2,
+    "enableTabSwitchDetection": true,
+    "enableFullScreenMode": false,
+    "enableCopyPasteProtection": true,
+    "enableRightClickProtection": true,
+    "autoSubmitOnTimeExpiry": true,
+    "showTimeWarnings": true,
+    "timeWarningIntervals": [
+      20,
+      10,
+      5
+    ],
+    "enableAutoSave": true,
+    "autoSaveInterval": 30
+  },
+  "questions": [
+    {
+      "id": "q-math-1",
+      "type": "multiple-choice",
+      "question": "What is the value of x in the equation: 2x + 5 = 15?",
+      "options": [
+        "5",
+        "10",
+        "7.5",
+        "2.5"
+      ],
+      "correctAnswer": "5",
+      "points": 2,
+      "difficulty": "easy",
+      "category": "Algebra",
+      "allowCalculator": true
+    },
+    {
+      "id": "q-math-2",
+      "type": "multiple-choice",
+      "question": "What is the area of a circle with radius 5 cm? (Use π ≈ 3.14)",
+      "options": [
+        "78.5 cm²",
+        "31.4 cm²",
+        "15.7 cm²",
+        "157 cm²"
+      ],
+      "correctAnswer": "78.5 cm²",
+      "points": 3,
+      "difficulty": "medium",
+      "category": "Geometry",
+      "allowCalculator": true
+    },
+    {
+      "id": "q-math-3",
+      "type": "multiple-choice",
+      "question": "What is 25% of 200?",
+      "options": [
+        "50",
+        "25",
+        "75",
+        "100"
+      ],
+      "correctAnswer": "50",
+      "points": 1,
+      "difficulty": "easy",
+      "category": "Arithmetic",
+      "allowCalculator": false
+    },
+    {
+      "id": "q-math-4",
+      "type": "true-false",
+      "question": "The sum of angles in a triangle is always 180 degrees.",
+      "options": [],
+      "correctAnswer": "true",
+      "points": 1,
+      "difficulty": "easy",
+      "category": "Geometry",
+      "allowCalculator": false
+    },
+    {
+      "id": "q-math-5",
+      "type": "multiple-choice",
+      "question": "What is the square root of 144?",
+      "options": [
+        "12",
+        "14",
+        "10",
+        "16"
+      ],
+      "correctAnswer": "12",
+      "points": 1,
+      "difficulty": "easy",
+      "category": "Arithmetic",
+      "allowCalculator": false
+    }
+  ]
+}

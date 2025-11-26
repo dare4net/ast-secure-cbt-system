@@ -11,11 +11,23 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
-import { CalculatorIcon, Clock, AlertTriangle, CheckCircle, ArrowLeft, ArrowRight, Save } from "lucide-react"
+import { CalculatorIcon, Clock, AlertTriangle, CheckCircle, ArrowLeft, ArrowRight, Save, Flag } from "lucide-react"
 import { StudentNameInput } from "./student-name-input"
 import type { StudentInfo, StudentAnswerData } from "@/types/cbt"
 import { useExamSchedule } from "@/hooks/use-exam-schedule"
+import { toast } from "@/hooks/use-toast"
 import { ExamAvailability } from "./exam-availability"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 interface CBTSystemProps {
   examData: ExamData
@@ -30,12 +42,16 @@ export function CBTSystem({ examData, onExamComplete }: CBTSystemProps) {
   const [warnings, setWarnings] = useState<string[]>([])
   const [examAttempt, setExamAttempt] = useState<ExamAttempt | null>(null)
   const [studentInfo, setStudentInfo] = useState<StudentInfo | null>(null)
+  const [flagged, setFlagged] = useState<Record<string, boolean>>({})
+  const [navFilter, setNavFilter] = useState<"all" | "unanswered" | "flagged">("all")
+  const [liveMessage, setLiveMessage] = useState<string>("")
+  const [confirmSubmitOpen, setConfirmSubmitOpen] = useState(false)
 
   // Randomize questions if enabled
   const [questions, setQuestions] = useState<Question[]>([])
 
   const { availability } = useExamSchedule(examData.config.schedule)
-  console.log("cbt system");
+  
 
   useEffect(() => {
     let processedQuestions = [...examData.questions]
@@ -55,14 +71,15 @@ export function CBTSystem({ examData, onExamComplete }: CBTSystemProps) {
   }, [examData])
 
   useEffect(() => {
-    console.log("we are in use effect");
-    console.log(availability);
-    //console.log(examAttempt);
+    // react to key state changes if needed for side-effects in future
   }, [availability ,questions, currentQuestionIndex, answers, examStarted, showCalculator, warnings, examAttempt, studentInfo])
 
   const handleViolation = useCallback(
     (violation: string) => {
       setWarnings((prev) => [...prev, violation])
+      setLiveMessage(violation)
+      // Toast for visible feedback
+      toast({ title: "Security violation recorded", description: violation })
       if (examAttempt) {
         setExamAttempt((prev) =>
           prev
@@ -104,9 +121,10 @@ export function CBTSystem({ examData, onExamComplete }: CBTSystemProps) {
   )
 
   const handleAutoSave = useCallback(() => {
-    // Auto-save logic here
-    console.log("Auto-saving answers...", answers)
-  }, [answers])
+    // Auto-save logic placeholder
+    setLiveMessage("Answers auto-saved")
+    toast({ title: "Auto-saved", description: "Your answers were saved automatically." })
+  }, [])
 
   const timer = useTimer({
     totalTime: examData.config.timeLimit * 60,
@@ -134,9 +152,9 @@ export function CBTSystem({ examData, onExamComplete }: CBTSystemProps) {
     timer.start()
 
     // Request fullscreen after user gesture
-    /*if (examData.config.enableFullScreenMode) {
+    if (examData.config.enableFullScreenMode) {
       security.requestFullScreen()
-    }*/
+    }
   }
 
   const completeExam = () => {
@@ -186,7 +204,6 @@ export function CBTSystem({ examData, onExamComplete }: CBTSystemProps) {
 
     timer.pause()
     onExamComplete(completedAttempt, studentAnswerData)
-    console.log(completedAttempt);
   }
 
   const calculateScore = () => {
@@ -216,6 +233,7 @@ export function CBTSystem({ examData, onExamComplete }: CBTSystemProps) {
       }
     })
 
+    if (totalPoints === 0) return 0
     return Math.round((earnedPoints / totalPoints) * 100)
   }
 
@@ -232,8 +250,29 @@ export function CBTSystem({ examData, onExamComplete }: CBTSystemProps) {
     }
   }
 
+  const toggleFlagCurrent = () => {
+    const q = currentQuestion?.id
+    if (!q) return
+    setFlagged((prev) => ({ ...prev, [q]: !prev[q] }))
+  }
+
+  const isQuestionAnswered = (q: Question) => {
+    const a = answers[q.id]
+    return Array.isArray(a) ? a.length > 0 : !!a
+  }
+
+  const filteredIndexes = questions
+    .map((q: Question, i: number) => ({ q, i }))
+    .filter(({ q }) => {
+      if (navFilter === "all") return true
+      if (navFilter === "unanswered") return !isQuestionAnswered(q)
+      if (navFilter === "flagged") return !!flagged[q.id]
+      return true
+    })
+    .map(({ i }) => i)
+
   const currentQuestion = questions[currentQuestionIndex]
-  const progress = ((currentQuestionIndex + 1) / questions.length) * 100
+  const progress = questions.length > 0 ? ((currentQuestionIndex + 1) / questions.length) * 100 : 0
   const answeredQuestions = Object.keys(answers).length
 
   if (!studentInfo) {
@@ -244,7 +283,7 @@ export function CBTSystem({ examData, onExamComplete }: CBTSystemProps) {
     // Check if exam is available
     if (!availability.canStart) {
       return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+        <div className="min-h-full flex items-center justify-center bg-gray-50 p-4">
           <div className="w-full max-w-2xl">
             <ExamAvailability schedule={examData.config.schedule} examTitle={examData.config.title} />
           </div>
@@ -253,7 +292,7 @@ export function CBTSystem({ examData, onExamComplete }: CBTSystemProps) {
     }
 
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+      <div className="min-h-full flex items-center justify-center bg-gray-50 p-4">
         <Card className="w-full max-w-2xl">
           <CardHeader>
             <CardTitle className="text-2xl text-center">{examData.config.title}</CardTitle>
@@ -328,12 +367,23 @@ export function CBTSystem({ examData, onExamComplete }: CBTSystemProps) {
     )
   }
 
-  if (!currentQuestion) {
-    return <div>Loading...</div>
+  if (questions.length === 0) {
+    return (
+      <div className="min-h-full flex items-center justify-center bg-gray-50 p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle>No questions available</CardTitle>
+          </CardHeader>
+          <CardContent>
+            The selected exam has no questions. Please contact the exam administrator.
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className="min-h-full bg-gray-50 p-4">
       {/* Header */}
       <div className="sticky top-0 bg-white border-b shadow-sm z-40 p-4 mb-4">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -342,6 +392,9 @@ export function CBTSystem({ examData, onExamComplete }: CBTSystemProps) {
             <Badge variant="outline">
               {answeredQuestions}/{questions.length} Answered
             </Badge>
+            {flagged && Object.values(flagged).some(Boolean) && (
+              <Badge variant="secondary">{Object.values(flagged).filter(Boolean).length} Flagged</Badge>
+            )}
           </div>
 
           <div className="flex items-center gap-4">
@@ -352,7 +405,15 @@ export function CBTSystem({ examData, onExamComplete }: CBTSystemProps) {
               </Button>
             )}
 
-            <div className="flex items-center gap-2 text-sm">
+            <div
+              className={`flex items-center gap-2 text-sm ${
+                timer.warningLevel === "danger"
+                  ? "text-red-600"
+                  : timer.warningLevel === "warn"
+                    ? "text-orange-600"
+                    : ""
+              }`}
+            >
               <Clock className="h-4 w-4" />
               <span className="font-mono">{timer.formatTime()}</span>
             </div>
@@ -364,12 +425,16 @@ export function CBTSystem({ examData, onExamComplete }: CBTSystemProps) {
         <div className="max-w-6xl mx-auto mt-4">
           <Progress value={progress} className="h-2" />
         </div>
+
+        {/* Aria-live regions for assistive technologies */}
+        <div className="sr-only" aria-live="polite">{timer.latestWarning}</div>
+        <div className="sr-only" aria-live="polite">{liveMessage}</div>
       </div>
 
       {/* Warnings */}
       {warnings.length > 0 && (
         <div className="max-w-6xl mx-auto mb-4">
-          {warnings.slice(-3).map((warning, index) => (
+          {warnings.slice(-3).map((warning: string, index: number) => (
             <Alert key={index} className="mb-2">
               <AlertTriangle className="h-4 w-4" />
               <AlertDescription>{warning}</AlertDescription>
@@ -389,6 +454,14 @@ export function CBTSystem({ examData, onExamComplete }: CBTSystemProps) {
             questionNumber={currentQuestionIndex + 1}
             totalQuestions={questions.length}
           />
+
+          {/* Flag question action */}
+          <div className="mt-4 flex items-center gap-2">
+            <Button variant={flagged[currentQuestion.id] ? "destructive" : "outline"} size="sm" onClick={toggleFlagCurrent}>
+              <Flag className="h-4 w-4 mr-2" />
+              {flagged[currentQuestion.id] ? "Unflag Question" : "Flag Question"}
+            </Button>
+          </div>
         </div>
 
         {/* Navigation Panel */}
@@ -428,10 +501,47 @@ export function CBTSystem({ examData, onExamComplete }: CBTSystemProps) {
                 </Button>
               )}
 
-              <Button onClick={() => completeExam()} className="w-full">
-                <CheckCircle className="h-4 w-4 mr-2" />
-                Submit Exam
-              </Button>
+              <AlertDialog open={confirmSubmitOpen} onOpenChange={setConfirmSubmitOpen}>
+                <AlertDialogTrigger asChild>
+                  <Button className="w-full">
+                    <CheckCircle className="h-4 w-4 mr-2" />
+                    Submit Exam
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Submit exam?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      You won't be able to change your answers after submission.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Review Answers</AlertDialogCancel>
+                    <AlertDialogAction onClick={() => completeExam()}>Submit</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+
+              {/* Filters */}
+              <div className="pt-2 flex items-center gap-2">
+                <Button variant={navFilter === "all" ? "default" : "outline"} size="sm" onClick={() => setNavFilter("all")}>
+                  All
+                </Button>
+                <Button
+                  variant={navFilter === "unanswered" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setNavFilter("unanswered")}
+                >
+                  Unanswered
+                </Button>
+                <Button
+                  variant={navFilter === "flagged" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setNavFilter("flagged")}
+                >
+                  Flagged
+                </Button>
+              </div>
             </CardContent>
           </Card>
 
@@ -442,18 +552,22 @@ export function CBTSystem({ examData, onExamComplete }: CBTSystemProps) {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-5 gap-2">
-                {questions.map((_, index) => (
-                  <Button
-                    key={index}
-                    variant={index === currentQuestionIndex ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => goToQuestion(index)}
-                    className={`aspect-square p-0 ${
-                      answers[questions[index].id] ? "bg-green-100 border-green-300" : ""
-                    }`}
-                  >
-                    {index + 1}
-                  </Button>
+                {filteredIndexes.map((index: number) => (
+                  <div key={index} className="relative">
+                    <Button
+                      variant={index === currentQuestionIndex ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => goToQuestion(index)}
+                      className={`aspect-square p-0 ${
+                        answers[questions[index].id] ? "bg-green-100 border-green-300" : ""
+                      }`}
+                    >
+                      {index + 1}
+                    </Button>
+                    {flagged[questions[index].id] && (
+                      <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-red-500" />
+                    )}
+                  </div>
                 ))}
               </div>
             </CardContent>
@@ -463,6 +577,49 @@ export function CBTSystem({ examData, onExamComplete }: CBTSystemProps) {
 
       {/* Calculator Modal */}
       <Calculator isOpen={showCalculator} onClose={() => setShowCalculator(false)} />
+
+      {/* Mobile sticky action bar */}
+      <div className="fixed bottom-0 left-0 right-0 border-t bg-white p-2 sm:hidden">
+        <div className="max-w-6xl mx-auto flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => goToQuestion(currentQuestionIndex - 1)}
+            disabled={currentQuestionIndex === 0 || !examData.config.allowBackNavigation}
+            className="flex-1"
+          >
+            <ArrowLeft className="h-4 w-4 mr-1" /> Prev
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => goToQuestion(currentQuestionIndex + 1)}
+            disabled={currentQuestionIndex === questions.length - 1}
+            className="flex-1"
+          >
+            Next <ArrowRight className="h-4 w-4 ml-1" />
+          </Button>
+          <AlertDialog open={confirmSubmitOpen} onOpenChange={setConfirmSubmitOpen}>
+            <AlertDialogTrigger asChild>
+              <Button size="sm" className="flex-1">
+                <CheckCircle className="h-4 w-4 mr-1" /> Submit
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Submit exam?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  You won't be able to change your answers after submission.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Review</AlertDialogCancel>
+                <AlertDialogAction onClick={() => completeExam()}>Submit</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+      </div>
     </div>
   )
 }

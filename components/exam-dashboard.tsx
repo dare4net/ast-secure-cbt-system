@@ -2,9 +2,10 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import type { ExamData } from "@/types/cbt"
 import { useExamSchedule } from "@/hooks/use-exam-schedule"
+import { loadAvailableExams } from "@/lib/exam-loader"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -19,6 +20,12 @@ interface ExamDashboardProps {
 export function ExamDashboard({ onExamSelect }: ExamDashboardProps) {
   const [examFiles, setExamFiles] = useState<ExamData[]>([])
   const [studentName, setStudentName] = useState("")
+
+  // Load exams from lib folder on mount
+  useEffect(() => {
+    const preloadedExams = loadAvailableExams()
+    setExamFiles(preloadedExams)
+  }, [])
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files
@@ -120,62 +127,12 @@ export function ExamDashboard({ onExamSelect }: ExamDashboardProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-full bg-background p-6">
+      <div className="max-w-7xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold mb-4">Student Exam Dashboard</h1>
           <p className="text-xl text-muted-foreground">View and access your scheduled exams</p>
         </div>
-
-        {/* Student Info */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <User className="h-5 w-5" />
-              Student Information
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="studentName">Full Name</Label>
-                <Input
-                  id="studentName"
-                  value={studentName}
-                  onChange={(e) => setStudentName(e.target.value)}
-                  placeholder="Enter your full name"
-                />
-              </div>
-              <div className="flex items-end">
-                <div className="text-sm text-muted-foreground">Current Time: {new Date().toLocaleString()}</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Upload Exams */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Upload className="h-5 w-5" />
-              Upload Exam Files
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <p className="text-muted-foreground">
-                Upload exam JSON files provided by your instructor. You can upload multiple files at once.
-              </p>
-              <input
-                type="file"
-                accept=".json"
-                multiple
-                onChange={handleFileUpload}
-                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-              />
-            </div>
-          </CardContent>
-        </Card>
 
         {/* Available Exams */}
         {examFiles.length > 0 && (

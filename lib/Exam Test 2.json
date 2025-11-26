@@ -1,0 +1,73 @@
+{
+  "config": {
+    "title": "Exam Test 2",
+    "description": "This is a second demo Exam number 2 testing the new capabilities and UI",
+    "timeLimit": 60,
+    "totalQuestions": 10,
+    "passingScore": 70,
+    "allowCalculator": true,
+    "allowBackNavigation": true,
+    "randomizeQuestions": false,
+    "randomizeOptions": false,
+    "showResultsImmediately": true,
+    "maxAttempts": 1,
+    "enableTabSwitchDetection": true,
+    "enableFullScreenMode": false,
+    "enableCopyPasteProtection": true,
+    "enableRightClickProtection": true,
+    "autoSubmitOnTimeExpiry": true,
+    "showTimeWarnings": true,
+    "timeWarningIntervals": [
+      30,
+      10,
+      5
+    ],
+    "enableAutoSave": true,
+    "autoSaveInterval": 30
+  },
+  "questions": [
+    {
+      "id": "q-1759326925860",
+      "type": "multiple-choice",
+      "question": "2What is the meaning of HTML?",
+      "options": [
+        "Hyper Text Markup Language",
+        "Hyper Active Man Lamp",
+        "Hyper Lan Area Protocol",
+        "Higherweb Text Main Language"
+      ],
+      "correctAnswer": "Hyper Text Markup Language",
+      "points": 2,
+      "difficulty": "medium",
+      "category": "",
+      "allowCalculator": false
+    },
+    {
+      "id": "q-1759326934092",
+      "type": "multiple-choice",
+      "question": "2What is the meaning of CSS?",
+      "options": [
+        "Cat Sam Seth",
+        "Cascading Style Sheet",
+        "Cascading Styling Sum",
+        "Caret Selling Sum"
+      ],
+      "correctAnswer": "Cascading Style Sheet",
+      "points": 1,
+      "difficulty": "medium",
+      "category": "",
+      "allowCalculator": false
+    },
+    {
+      "id": "q-1759326946021",
+      "type": "fill-blank",
+      "question": "2What is the meaning of the DOM?",
+      "options": [],
+      "correctAnswer": "Document Object Model",
+      "points": 1,
+      "difficulty": "medium",
+      "category": "",
+      "allowCalculator": false
+    }
+  ]
+}

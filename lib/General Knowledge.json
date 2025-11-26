@@ -1,0 +1,132 @@
+{
+  "config": {
+    "title": "General Knowledge",
+    "description": "Test your general knowledge across various topics including history, geography, and current affairs",
+    "timeLimit": 40,
+    "totalQuestions": 10,
+    "passingScore": 65,
+    "allowCalculator": false,
+    "allowBackNavigation": true,
+    "randomizeQuestions": true,
+    "randomizeOptions": true,
+    "showResultsImmediately": true,
+    "maxAttempts": 1,
+    "enableTabSwitchDetection": false,
+    "enableFullScreenMode": false,
+    "enableCopyPasteProtection": false,
+    "enableRightClickProtection": false,
+    "autoSubmitOnTimeExpiry": true,
+    "showTimeWarnings": true,
+    "timeWarningIntervals": [
+      20,
+      10,
+      5
+    ],
+    "enableAutoSave": true,
+    "autoSaveInterval": 30
+  },
+  "questions": [
+    {
+      "id": "q-gk-1",
+      "type": "multiple-choice",
+      "question": "What is the capital of France?",
+      "options": [
+        "Paris",
+        "London",
+        "Berlin",
+        "Madrid"
+      ],
+      "correctAnswer": "Paris",
+      "points": 1,
+      "difficulty": "easy",
+      "category": "Geography",
+      "allowCalculator": false
+    },
+    {
+      "id": "q-gk-2",
+      "type": "multiple-choice",
+      "question": "Who painted the Mona Lisa?",
+      "options": [
+        "Leonardo da Vinci",
+        "Pablo Picasso",
+        "Vincent van Gogh",
+        "Michelangelo"
+      ],
+      "correctAnswer": "Leonardo da Vinci",
+      "points": 1,
+      "difficulty": "easy",
+      "category": "Art",
+      "allowCalculator": false
+    },
+    {
+      "id": "q-gk-3",
+      "type": "multiple-choice",
+      "question": "What is the largest ocean on Earth?",
+      "options": [
+        "Pacific Ocean",
+        "Atlantic Ocean",
+        "Indian Ocean",
+        "Arctic Ocean"
+      ],
+      "correctAnswer": "Pacific Ocean",
+      "points": 1,
+      "difficulty": "easy",
+      "category": "Geography",
+      "allowCalculator": false
+    },
+    {
+      "id": "q-gk-4",
+      "type": "true-false",
+      "question": "The Great Wall of China is visible from space.",
+      "options": [],
+      "correctAnswer": "false",
+      "points": 2,
+      "difficulty": "medium",
+      "category": "History",
+      "allowCalculator": false
+    },
+    {
+      "id": "q-gk-5",
+      "type": "multiple-choice",
+      "question": "Which planet is closest to the Sun?",
+      "options": [
+        "Mercury",
+        "Venus",
+        "Earth",
+        "Mars"
+      ],
+      "correctAnswer": "Mercury",
+      "points": 1,
+      "difficulty": "easy",
+      "category": "Science",
+      "allowCalculator": false
+    },
+    {
+      "id": "q-gk-6",
+      "type": "multiple-choice",
+      "question": "In which year did World War II end?",
+      "options": [
+        "1945",
+        "1944",
+        "1946",
+        "1943"
+      ],
+      "correctAnswer": "1945",
+      "points": 2,
+      "difficulty": "medium",
+      "category": "History",
+      "allowCalculator": false
+    },
+    {
+      "id": "q-gk-7",
+      "type": "fill-blank",
+      "question": "The Eiffel Tower is located in _____.",
+      "options": [],
+      "correctAnswer": "Paris",
+      "points": 1,
+      "difficulty": "easy",
+      "category": "Geography",
+      "allowCalculator": false
+    }
+  ]
+}

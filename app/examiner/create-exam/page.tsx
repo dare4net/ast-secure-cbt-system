@@ -1,0 +1,17 @@
+"use client"
+
+import { AdminPanel } from "@/components/admin-panel"
+import { SiteHeader } from "@/components/site-header"
+import { SiteFooter } from "@/components/site-footer"
+
+export default function ExaminerCreateExamPage() {
+  return (
+    <div className="flex flex-col min-h-screen">
+      <SiteHeader />
+      <main className="flex-1">
+        <AdminPanel />
+      </main>
+      <SiteFooter />
+    </div>
+  )
+}

@@ -3,84 +3,122 @@
 @tailwind utilities;
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+  .no-select {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
 }
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
+    /* Soft pastel background */
+    --background: 220 25% 98%;
+    --foreground: 220 15% 25%;
+    
+    /* Minimal card design */
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
+    --card-foreground: 220 15% 25%;
+    
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --popover-foreground: 220 15% 25%;
+    
+    /* Pastel lavender/periwinkle primary */
+    --primary: 240 45% 75%;
+    --primary-foreground: 240 60% 25%;
+    
+    /* Soft mint secondary */
+    --secondary: 160 35% 85%;
+    --secondary-foreground: 160 40% 30%;
+    
+    /* Ultra-light muted tones */
+    --muted: 220 20% 96%;
+    --muted-foreground: 220 10% 50%;
+    
+    /* Pastel blue accent */
+    --accent: 210 50% 85%;
+    --accent-foreground: 210 50% 30%;
+    
+    /* Soft coral for warnings */
+    --destructive: 0 65% 82%;
+    --destructive-foreground: 0 70% 35%;
+    
+    /* Minimal borders */
+    --border: 220 15% 92%;
+    --input: 220 15% 95%;
+    --ring: 240 45% 75%;
+    
+    /* Soft pastel chart colors */
+    --chart-1: 240 45% 75%; /* lavender */
+    --chart-2: 160 40% 75%; /* mint */
+    --chart-3: 340 50% 80%; /* soft pink */
+    --chart-4: 45 60% 80%; /* cream */
+    --chart-5: 190 45% 78%; /* sky blue */
+    
+    --radius: 0.75rem;
+    
+    --sidebar-background: 0 0% 99%;
+    --sidebar-foreground: 220 15% 30%;
+    --sidebar-primary: 240 45% 75%;
+    --sidebar-primary-foreground: 240 60% 25%;
+    --sidebar-accent: 220 20% 96%;
+    --sidebar-accent-foreground: 220 15% 30%;
+    --sidebar-border: 220 15% 94%;
+    --sidebar-ring: 240 45% 75%;
   }
   .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Dark mode with deep navy and pastel accents */
+    --background: 230 20% 12%;
+    --foreground: 220 15% 90%;
+    
+    --card: 230 18% 16%;
+    --card-foreground: 220 15% 90%;
+    
+    --popover: 230 18% 16%;
+    --popover-foreground: 220 15% 90%;
+    
+    --primary: 240 50% 70%;
+    --primary-foreground: 240 20% 98%;
+    
+    --secondary: 160 35% 60%;
+    --secondary-foreground: 160 15% 95%;
+    
+    --muted: 230 15% 20%;
+    --muted-foreground: 220 10% 65%;
+    
+    --accent: 210 50% 65%;
+    --accent-foreground: 210 15% 95%;
+    
+    --destructive: 0 60% 70%;
+    --destructive-foreground: 0 15% 95%;
+    
+    --border: 230 15% 24%;
+    --input: 230 15% 24%;
+    --ring: 240 50% 70%;
+    
+    --chart-1: 240 50% 70%;
+    --chart-2: 160 40% 65%;
+    --chart-3: 340 50% 75%;
+    --chart-4: 45 60% 75%;
+    --chart-5: 190 45% 70%;
+    
+    --sidebar-background: 230 20% 14%;
+    --sidebar-foreground: 220 15% 85%;
+    --sidebar-primary: 240 50% 70%;
+    --sidebar-primary-foreground: 240 20% 98%;
+    --sidebar-accent: 230 15% 20%;
+    --sidebar-accent-foreground: 220 15% 85%;
+    --sidebar-border: 230 15% 22%;
+    --sidebar-ring: 240 50% 70%;
   }
 }
 
@@ -91,4 +129,44 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Ambient particles - soft and subtle */
+.ambient-particle {
+  position: absolute;
+  border-radius: 9999px;
+  background: radial-gradient(circle at 30% 30%, hsl(var(--primary) / 0.15), transparent 70%);
+  transform-origin: center;
+  animation-name: float-and-fade;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  mix-blend-mode: normal;
+  opacity: 0.6;
+}
+
+@keyframes float-and-fade {
+  0% {
+    transform: translate3d(-10px, 10px, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(10px, -10px, 0) scale(1.06);
+  }
+  100% {
+    transform: translate3d(-10px, 10px, 0) scale(1);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateY(-20px) translateX(10px);
+    opacity: 0.6;
+  }
+}
+
+.animate-float {
+  animation: float linear infinite;
 }

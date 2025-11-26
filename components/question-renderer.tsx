@@ -1,4 +1,5 @@
 "use client"
+import type React from "react"
 import type { Question } from "@/types/cbt"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
@@ -22,34 +23,60 @@ export function QuestionRenderer({
   questionNumber,
   totalQuestions,
 }: QuestionRendererProps) {
+  const optionId = (suffix: string | number) => `${question.id}-opt-${suffix}`
+
   const renderQuestionContent = () => {
     switch (question.type) {
       case "multiple-choice":
         return (
-          <RadioGroup value={answer as string} onValueChange={onAnswerChange} className="space-y-3">
-            {question.options?.map((option, index) => (
-              <div key={index} className="flex items-center space-x-2">
-                <RadioGroupItem value={option} id={`option-${index}`} />
-                <Label htmlFor={`option-${index}`} className="flex-1 cursor-pointer">
-                  {option}
-                </Label>
-              </div>
-            ))}
-          </RadioGroup>
+          <div
+            role="group"
+            aria-label="Multiple choice options"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              const opts = question.options || []
+              const current = (answer as string) || ""
+              const idx = opts.findIndex((o) => o === current)
+              if (e.key === "ArrowDown" || e.key === "ArrowRight") {
+                const next = opts[(idx + 1 + opts.length) % opts.length]
+                if (next) onAnswerChange(next)
+              }
+              if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
+                const prev = opts[(idx - 1 + opts.length) % opts.length]
+                if (prev) onAnswerChange(prev)
+              }
+              const n = Number(e.key)
+              if (Number.isInteger(n) && n >= 1 && n <= opts.length) {
+                onAnswerChange(opts[n - 1] as string)
+              }
+            }}
+          >
+            <RadioGroup value={answer as string} onValueChange={onAnswerChange} className="space-y-3">
+              {question.options?.map((option, index) => (
+                <div key={index} className="flex items-center space-x-2">
+                  <RadioGroupItem value={option} id={optionId(index)} aria-checked={(answer as string) === option} />
+                  <Label htmlFor={optionId(index)} className="flex-1 cursor-pointer">
+                    {index + 1}. {option}
+                  </Label>
+                </div>
+              ))}
+            </RadioGroup>
+          </div>
         )
 
       case "true-false":
         return (
-          <RadioGroup value={answer as string} onValueChange={onAnswerChange} className="space-y-3">
+          <RadioGroup value={answer as string} onValueChange={onAnswerChange} className="space-y-3" aria-label="True or false">
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="true" id="true" />
-              <Label htmlFor="true" className="cursor-pointer">
+              <RadioGroupItem value="true" id={optionId("true")}
+                aria-checked={(answer as string) === "true"} />
+              <Label htmlFor={optionId("true")} className="cursor-pointer">
                 True
               </Label>
             </div>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="false" id="false" />
-              <Label htmlFor="false" className="cursor-pointer">
+              <RadioGroupItem value="false" id={optionId("false")} aria-checked={(answer as string) === "false"} />
+              <Label htmlFor={optionId("false")} className="cursor-pointer">
                 False
               </Label>
             </div>
@@ -60,9 +87,10 @@ export function QuestionRenderer({
         return (
           <Input
             value={answer as string}
-            onChange={(e) => onAnswerChange(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => onAnswerChange(e.target.value)}
             placeholder="Enter your answer..."
             className="w-full"
+            aria-label="Answer"
           />
         )
 
@@ -70,31 +98,52 @@ export function QuestionRenderer({
         return (
           <Textarea
             value={answer as string}
-            onChange={(e) => onAnswerChange(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => onAnswerChange(e.target.value)}
             placeholder="Write your essay here..."
             className="w-full min-h-32"
+            aria-label="Essay answer"
           />
         )
 
       case "matching":
         const currentAnswers = Array.isArray(answer) ? answer : []
         return (
-          <div className="space-y-3">
+          <div
+            className="space-y-3"
+            role="group"
+            aria-label="Select all that apply"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              const opts = question.options || []
+              const n = Number(e.key)
+              if (Number.isInteger(n) && n >= 1 && n <= opts.length) {
+                const opt = opts[n - 1] as string
+                const isChecked = currentAnswers.includes(opt)
+                if (isChecked) {
+                  onAnswerChange(currentAnswers.filter((a) => a !== opt))
+                } else {
+                  onAnswerChange([...currentAnswers, opt])
+                }
+              }
+            }}
+          >
             {question.options?.map((option, index) => (
               <div key={index} className="flex items-center space-x-2">
                 <Checkbox
                   checked={currentAnswers.includes(option)}
-                  onCheckedChange={(checked) => {
-                    if (checked) {
+                  onCheckedChange={(checked: boolean | "indeterminate") => {
+                    const isChecked = checked === true
+                    if (isChecked) {
                       onAnswerChange([...currentAnswers, option])
                     } else {
                       onAnswerChange(currentAnswers.filter((a) => a !== option))
                     }
                   }}
-                  id={`match-${index}`}
+                  id={optionId(`match-${index}`)}
+                  aria-checked={currentAnswers.includes(option)}
                 />
-                <Label htmlFor={`match-${index}`} className="cursor-pointer">
-                  {option}
+                <Label htmlFor={optionId(`match-${index}`)} className="cursor-pointer">
+                  {index + 1}. {option}
                 </Label>
               </div>
             ))}

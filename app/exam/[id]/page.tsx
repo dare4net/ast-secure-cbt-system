@@ -1,9 +1,7 @@
 "use client"
 
-import type React from "react"
-
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
 import type { Question, ExamConfig, ExamData } from "@/types/cbt"
 import { loadAvailableExams } from "@/lib/exam-loader"
 import { Button } from "@/components/ui/button"
@@ -15,12 +13,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
-import { Plus, Trash2, Download, Upload, Eye, Edit, Copy } from "lucide-react"
-import { ExamScheduler } from "./exam-scheduler"
-import { SavedExamsList } from "./saved-exams-list"
+import { Plus, Trash2, Download, ArrowLeft, Save, Eye, Edit, Copy } from "lucide-react"
+import { ExamScheduler } from "@/components/exam-scheduler"
 
-export function AdminPanel() {
+export default function ExamEditorPage() {
+  const params = useParams()
   const router = useRouter()
+  const examId = params.id as string
+
   const [examConfig, setExamConfig] = useState<ExamConfig>({
     title: "",
     description: "",
@@ -56,6 +56,23 @@ export function AdminPanel() {
     allowCalculator: false,
   })
   const [editingIndex, setEditingIndex] = useState<number | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  // Load exam if editing existing one
+  useEffect(() => {
+    if (examId !== "new") {
+      const savedExams = loadAvailableExams()
+      const exam = savedExams.find((e) => 
+        e.config.title.toLowerCase().replace(/\s+/g, "-") === examId
+      )
+      
+      if (exam) {
+        setExamConfig(exam.config)
+        setQuestions(exam.questions)
+      }
+    }
+    setIsLoading(false)
+  }, [examId])
 
   const addQuestion = () => {
     if (!currentQuestion.question) return
@@ -115,7 +132,7 @@ export function AdminPanel() {
     setQuestions([...questions, question])
   }
 
-  const exportExam = () => {
+  const saveExam = () => {
     const examData: ExamData = {
       config: examConfig,
       questions: questions,
@@ -130,28 +147,8 @@ export function AdminPanel() {
     a.download = `${examConfig.title || "exam"}.json`
     a.click()
     URL.revokeObjectURL(url)
-  }
 
-  const importExam = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (!file) return
-
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      try {
-        const examData: ExamData = JSON.parse(e.target?.result as string)
-        setExamConfig(examData.config)
-        setQuestions(examData.questions)
-      } catch (error) {
-        alert("Invalid JSON file")
-      }
-    }
-    reader.readAsText(file)
-  }
-
-  const loadExam = (exam: ExamData) => {
-    setExamConfig(exam.config)
-    setQuestions(exam.questions)
+    alert("Exam saved! Download the file and place it in the lib folder.")
   }
 
   const updateQuestionOption = (index: number, value: string) => {
@@ -170,51 +167,45 @@ export function AdminPanel() {
     setCurrentQuestion({ ...currentQuestion, options: newOptions })
   }
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p>Loading exam...</p>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-full bg-gray-50 p-4">
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold">CBT Admin Panel</h1>
+          <div className="flex items-center gap-4">
+            <Button variant="outline" onClick={() => router.push("/admin")}>
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Admin
+            </Button>
+            <h1 className="text-3xl font-bold">
+              {examId === "new" ? "Create New Exam" : "Edit Exam"}
+            </h1>
+          </div>
           <div className="flex gap-2">
-            <Button onClick={() => router.push("/exam/new")}>
-              <Plus className="h-4 w-4 mr-2" />
-              Create New Exam
+            <Button onClick={saveExam} disabled={questions.length === 0 || !examConfig.title}>
+              <Save className="h-4 w-4 mr-2" />
+              Save Exam
             </Button>
-            <input type="file" accept=".json" onChange={importExam} className="hidden" id="import-file" />
-            <Button variant="outline" onClick={() => document.getElementById("import-file")?.click()}>
-              <Upload className="h-4 w-4 mr-2" />
-              Import
-            </Button>
-            <Button onClick={exportExam} disabled={questions.length === 0}>
+            <Button onClick={saveExam} disabled={questions.length === 0} variant="outline">
               <Download className="h-4 w-4 mr-2" />
-              Export Exam
+              Export
             </Button>
           </div>
         </div>
 
-        <Tabs defaultValue="saved" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="saved">Saved Exams</TabsTrigger>
+        <Tabs defaultValue="config" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="config">Exam Configuration</TabsTrigger>
             <TabsTrigger value="questions">Questions ({questions.length})</TabsTrigger>
             <TabsTrigger value="preview">Preview</TabsTrigger>
           </TabsList>
-
-          <TabsContent value="saved">
-            <Card>
-              <CardHeader>
-                <CardTitle>Saved Exams Library</CardTitle>
-              </CardHeader>
-              <CardContent className="max-h-[calc(100vh-250px)] overflow-y-auto">
-                <SavedExamsList
-                  onExamLoad={loadExam}
-                  showEditButton={true}
-                  showCloneButton={true}
-                  maxHeight="none"
-                />
-              </CardContent>
-            </Card>
-          </TabsContent>
 
           <TabsContent value="config">
             <Card>

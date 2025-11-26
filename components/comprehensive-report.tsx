@@ -1,11 +1,14 @@
 "use client"
-import { useRef } from "react"
+import { useRef, useState } from "react"
 import type { ExamReport } from "@/types/cbt"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Download, CheckCircle, XCircle, AlertTriangle, User, FileText } from "lucide-react"
+import { Switch } from "@/components/ui/switch"
+import { Label } from "@/components/ui/label"
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 
 interface ComprehensiveReportProps {
   report: ExamReport
@@ -13,11 +16,62 @@ interface ComprehensiveReportProps {
 
 export function ComprehensiveReport({ report }: ComprehensiveReportProps) {
   const reportRef = useRef<HTMLDivElement>(null)
+  const [csvIncorrectOnly, setCsvIncorrectOnly] = useState(false)
+  const [selectedCategory, setSelectedCategory] = useState<string>("all")
 
   // Helper function to safely convert any date format to a Date object
   const toDate = (date: Date | string): Date => {
     if (date instanceof Date) return date
     return new Date(date)
+  }
+
+  const escapeCsv = (val: unknown) => {
+    const s = Array.isArray(val) ? val.join("; ") : String(val ?? "")
+    // Escape quotes and wrap in quotes if needed
+    const needsQuotes = /[",\n]/.test(s)
+    const escaped = s.replace(/"/g, '""')
+    return needsQuotes ? `"${escaped}"` : escaped
+  }
+
+  const downloadCsv = (incorrectOnly: boolean) => {
+    const rows = report.detailedAnswers
+      .filter((a) => (incorrectOnly ? !a.isCorrect : true))
+      .map((a, idx) => [
+        idx + 1,
+        a.questionId,
+        a.question,
+        Array.isArray(a.studentAnswer) ? a.studentAnswer.join(", ") : a.studentAnswer,
+        Array.isArray(a.correctAnswer) ? a.correctAnswer.join(", ") : a.correctAnswer,
+        a.isCorrect ? "Correct" : "Incorrect",
+        a.points,
+        a.earnedPoints,
+      ])
+
+    const header = [
+      "#",
+      "Question ID",
+      "Question",
+      "Student Answer",
+      "Correct Answer",
+      "Result",
+      "Points",
+      "Earned Points",
+    ]
+
+    const csv = [header, ...rows]
+      .map((row) => row.map(escapeCsv).join(","))
+      .join("\n")
+
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement("a")
+    const baseName = `${report.studentInfo.name.replace(/\s+/g, "_")}_${
+      report.examConfig.title.replace(/\s+/g, "_")
+    }_report${incorrectOnly ? "_incorrect" : ""}`
+    link.download = `${baseName}.csv`
+    link.href = url
+    link.click()
+    URL.revokeObjectURL(url)
   }
 
   const downloadReport = () => {
@@ -152,7 +206,7 @@ export function ComprehensiveReport({ report }: ComprehensiveReportProps) {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Comprehensive Exam Report</h1>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap items-center">
           <Button onClick={downloadPrintableReport} variant="outline">
             <FileText className="h-4 w-4 mr-2" />
             Print Report
@@ -161,6 +215,33 @@ export function ComprehensiveReport({ report }: ComprehensiveReportProps) {
             <Download className="h-4 w-4 mr-2" />
             Download JSON
           </Button>
+          <div className="hidden sm:flex items-center gap-2 ml-2">
+            <Switch id="csv-incorrect-only" checked={csvIncorrectOnly} onCheckedChange={setCsvIncorrectOnly} />
+            <Label htmlFor="csv-incorrect-only" className="text-sm">Incorrect only</Label>
+          </div>
+          <Button onClick={() => downloadCsv(csvIncorrectOnly)} variant="outline">
+            <Download className="h-4 w-4 mr-2" />
+            Download CSV
+          </Button>
+
+          {/* Category filter */}
+          <div className="flex items-center gap-2 ml-2">
+            <Label htmlFor="category-filter" className="text-sm">Category</Label>
+            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <SelectTrigger id="category-filter" className="w-[180px]">
+                <SelectValue placeholder="All categories" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All</SelectItem>
+                {Array.from(new Set((report.questions || [])
+                  .map((q) => q.category)
+                  .filter((c): c is string => !!c && c.trim().length > 0)))
+                  .map((cat) => (
+                    <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                  ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </div>
 
@@ -257,7 +338,9 @@ export function ComprehensiveReport({ report }: ComprehensiveReportProps) {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {report.detailedAnswers.map((answer, index) => (
+              {report.detailedAnswers
+                .filter((a) => selectedCategory === "all" || (report.questions.find((q) => q.id === a.questionId)?.category ?? "") === selectedCategory)
+                .map((answer, index) => (
                 <div key={answer.questionId} className="border rounded-lg p-4">
                   <div className="flex justify-between items-start mb-3">
                     <h4 className="font-semibold">Question {index + 1}</h4>

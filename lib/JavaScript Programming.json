@@ -1,0 +1,132 @@
+{
+  "config": {
+    "title": "JavaScript Programming",
+    "description": "Test your knowledge of JavaScript fundamentals, ES6 features, and programming concepts",
+    "timeLimit": 60,
+    "totalQuestions": 10,
+    "passingScore": 80,
+    "allowCalculator": false,
+    "allowBackNavigation": true,
+    "randomizeQuestions": false,
+    "randomizeOptions": false,
+    "showResultsImmediately": true,
+    "maxAttempts": 3,
+    "enableTabSwitchDetection": true,
+    "enableFullScreenMode": true,
+    "enableCopyPasteProtection": true,
+    "enableRightClickProtection": true,
+    "autoSubmitOnTimeExpiry": true,
+    "showTimeWarnings": true,
+    "timeWarningIntervals": [
+      30,
+      15,
+      5
+    ],
+    "enableAutoSave": true,
+    "autoSaveInterval": 30
+  },
+  "questions": [
+    {
+      "id": "q-js-1",
+      "type": "multiple-choice",
+      "question": "Which of the following is NOT a JavaScript data type?",
+      "options": [
+        "Float",
+        "String",
+        "Boolean",
+        "Number"
+      ],
+      "correctAnswer": "Float",
+      "points": 2,
+      "difficulty": "medium",
+      "category": "Data Types",
+      "allowCalculator": false
+    },
+    {
+      "id": "q-js-2",
+      "type": "multiple-choice",
+      "question": "What keyword is used to declare a block-scoped variable in ES6?",
+      "options": [
+        "let",
+        "var",
+        "const",
+        "define"
+      ],
+      "correctAnswer": "let",
+      "points": 1,
+      "difficulty": "easy",
+      "category": "ES6",
+      "allowCalculator": false
+    },
+    {
+      "id": "q-js-3",
+      "type": "true-false",
+      "question": "JavaScript is a statically typed language.",
+      "options": [],
+      "correctAnswer": "false",
+      "points": 1,
+      "difficulty": "easy",
+      "category": "Fundamentals",
+      "allowCalculator": false
+    },
+    {
+      "id": "q-js-4",
+      "type": "multiple-choice",
+      "question": "What does JSON stand for?",
+      "options": [
+        "JavaScript Object Notation",
+        "Java Standard Object Notation",
+        "JavaScript Oriented Notation",
+        "Java Serialized Object Network"
+      ],
+      "correctAnswer": "JavaScript Object Notation",
+      "points": 1,
+      "difficulty": "easy",
+      "category": "JSON",
+      "allowCalculator": false
+    },
+    {
+      "id": "q-js-5",
+      "type": "multiple-choice",
+      "question": "Which method is used to add an element to the end of an array?",
+      "options": [
+        "push()",
+        "pop()",
+        "shift()",
+        "unshift()"
+      ],
+      "correctAnswer": "push()",
+      "points": 1,
+      "difficulty": "easy",
+      "category": "Arrays",
+      "allowCalculator": false
+    },
+    {
+      "id": "q-js-6",
+      "type": "multiple-choice",
+      "question": "What is the output of: typeof null?",
+      "options": [
+        "object",
+        "null",
+        "undefined",
+        "number"
+      ],
+      "correctAnswer": "object",
+      "points": 3,
+      "difficulty": "hard",
+      "category": "Quirks",
+      "allowCalculator": false
+    },
+    {
+      "id": "q-js-7",
+      "type": "fill-blank",
+      "question": "The keyword used to create a constant in JavaScript is _____.",
+      "options": [],
+      "correctAnswer": "const",
+      "points": 1,
+      "difficulty": "easy",
+      "category": "ES6",
+      "allowCalculator": false
+    }
+  ]
+}

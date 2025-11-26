@@ -1,0 +1,116 @@
+{
+  "config": {
+    "title": "Science Fundamentals",
+    "description": "Basic science concepts covering Physics, Chemistry, and Biology",
+    "timeLimit": 50,
+    "totalQuestions": 10,
+    "passingScore": 70,
+    "allowCalculator": false,
+    "allowBackNavigation": true,
+    "randomizeQuestions": true,
+    "randomizeOptions": true,
+    "showResultsImmediately": true,
+    "maxAttempts": 2,
+    "enableTabSwitchDetection": true,
+    "enableFullScreenMode": false,
+    "enableCopyPasteProtection": true,
+    "enableRightClickProtection": true,
+    "autoSubmitOnTimeExpiry": true,
+    "showTimeWarnings": true,
+    "timeWarningIntervals": [
+      25,
+      10,
+      5
+    ],
+    "enableAutoSave": true,
+    "autoSaveInterval": 30
+  },
+  "questions": [
+    {
+      "id": "q-sci-1",
+      "type": "multiple-choice",
+      "question": "What is the chemical symbol for water?",
+      "options": [
+        "H2O",
+        "CO2",
+        "O2",
+        "H2"
+      ],
+      "correctAnswer": "H2O",
+      "points": 1,
+      "difficulty": "easy",
+      "category": "Chemistry",
+      "allowCalculator": false
+    },
+    {
+      "id": "q-sci-2",
+      "type": "multiple-choice",
+      "question": "Which planet is known as the Red Planet?",
+      "options": [
+        "Mars",
+        "Venus",
+        "Jupiter",
+        "Saturn"
+      ],
+      "correctAnswer": "Mars",
+      "points": 1,
+      "difficulty": "easy",
+      "category": "Astronomy",
+      "allowCalculator": false
+    },
+    {
+      "id": "q-sci-3",
+      "type": "true-false",
+      "question": "Plants produce oxygen through the process of photosynthesis.",
+      "options": [],
+      "correctAnswer": "true",
+      "points": 1,
+      "difficulty": "easy",
+      "category": "Biology",
+      "allowCalculator": false
+    },
+    {
+      "id": "q-sci-4",
+      "type": "multiple-choice",
+      "question": "What is the speed of light in vacuum?",
+      "options": [
+        "300,000 km/s",
+        "150,000 km/s",
+        "500,000 km/s",
+        "100,000 km/s"
+      ],
+      "correctAnswer": "300,000 km/s",
+      "points": 2,
+      "difficulty": "medium",
+      "category": "Physics",
+      "allowCalculator": false
+    },
+    {
+      "id": "q-sci-5",
+      "type": "multiple-choice",
+      "question": "What is the smallest unit of life?",
+      "options": [
+        "Cell",
+        "Atom",
+        "Molecule",
+        "Tissue"
+      ],
+      "correctAnswer": "Cell",
+      "points": 1,
+      "difficulty": "easy",
+      "category": "Biology",
+      "allowCalculator": false
+    },
+    {
+      "id": "q-sci-6",
+      "type": "fill-blank",
+      "question": "The force that attracts objects toward the center of the Earth is called _____.",
+      "options": [],
+      "correctAnswer": "gravity",
+      "points": 2,
+      "difficulty": "easy",
+      "category": "Physics",
+      "allowCalculator": false
+    }
+  ]
+}
